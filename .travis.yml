@@ -1,0 +1,13 @@
+language: go
+sudo: false
+
+matrix:
+  include:
+    - go: 1.12.x
+
+install:
+  - # Skip
+
+script:
+  - go get -t -v ./...
+  - go tool vet .
