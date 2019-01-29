@@ -38,10 +38,10 @@ func main() {
 	select {}
 }
 
-func run(t time.Time, name string, cmdArgs []string) {
+func run(t time.Time, name string, args []string) {
 	goterm.Clear()
 	goterm.MoveCursor(1, 1)
-	goterm.Printf("Every %ds: %s %s", *interval, name, strings.Join(cmdArgs, " "))
+	goterm.Printf("Every %ds: %s %s", *interval, name, strings.Join(args, " "))
 	width := goterm.Width()
 	ts := t.Format("Mon Jan _2 15:04:05 2006")
 	hn, err := os.Hostname()
@@ -55,7 +55,7 @@ func run(t time.Time, name string, cmdArgs []string) {
 	}
 
 	goterm.MoveCursor(2, 3)
-	cmd := exec.Command(name, cmdArgs...)
+	cmd := exec.Command(name, args...)
 	output, err := cmd.CombinedOutput()
 	if err == nil {
 		goterm.Print(string(output))
