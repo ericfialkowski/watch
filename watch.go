@@ -21,6 +21,7 @@ func main() {
 	cmdArray := flag.Args()
 	if len(cmdArray) == 0 {
 		fmt.Println("Must include a command to run")
+		flag.Usage()
 		os.Exit(1)
 	}
 	cmd := cmdArray[0]
