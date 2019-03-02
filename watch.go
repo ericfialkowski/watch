@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/buger/goterm"
@@ -17,6 +18,10 @@ var runWithCommand = flag.Bool("x", false, "Run with cmd.exe")
 var hideTitle = flag.Bool("t", false, "Hide title bar")
 var exitOnError = flag.Bool("e", false, "Exit on non-zero return of command")
 var preciseInterval = flag.Bool("p", false, "Try to run at precise interval")
+var exitOnChange = flag.Bool("g", false, "Exit when output changes")
+var oldOutput string
+
+var once sync.Once
 var cond = abool.New()
 
 func init() {
@@ -96,6 +101,15 @@ func run(t time.Time, name string, args []string) {
 			}
 		}
 		goterm.Flush()
+		if *exitOnChange {
+			once.Do(func() {
+				oldOutput = string(output)
+			})
+			if oldOutput != string(output) {
+				os.Exit(1)
+			}
+		}
+
 		cond.UnSet()
 	}
 }
