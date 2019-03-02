@@ -13,6 +13,7 @@ import (
 
 var interval = flag.Int("n", 5, "Interval in seconds")
 var runWithCommand = flag.Bool("c", false, "Run with cmd.exe")
+var hideTitle = flag.Bool("t", false, "Run with cmd.exe")
 
 func init() {
 	flag.Parse()
@@ -53,20 +54,22 @@ func main() {
 func run(t time.Time, name string, args []string) {
 	goterm.Clear()
 	goterm.MoveCursor(1, 1)
-	goterm.Printf("Every %ds: %s %s", *interval, name, strings.Join(args, " "))
-	width := goterm.Width()
-	ts := t.Format("Mon Jan _2 15:04:05 2006")
-	hn, err := os.Hostname()
-	if err == nil {
-		s := fmt.Sprintf("%s: %s", hn, ts)
-		goterm.MoveCursor(width-len(s), 1)
-		goterm.Print(s)
-	} else {
-		goterm.MoveCursor(width-len(ts), 1)
-		goterm.Print(ts)
-	}
+	if !*hideTitle {
+		goterm.Printf("Every %ds: %s %s", *interval, name, strings.Join(args, " "))
+		width := goterm.Width()
+		ts := t.Format("Mon Jan _2 15:04:05 2006")
+		hn, err := os.Hostname()
+		if err == nil {
+			s := fmt.Sprintf("%s: %s", hn, ts)
+			goterm.MoveCursor(width-len(s), 1)
+			goterm.Print(s)
+		} else {
+			goterm.MoveCursor(width-len(ts), 1)
+			goterm.Print(ts)
+		}
 
-	goterm.MoveCursor(2, 3)
+		goterm.MoveCursor(2, 3)
+	}
 	cmd := exec.Command(name, args...)
 	output, err := cmd.CombinedOutput()
 	if err == nil {
