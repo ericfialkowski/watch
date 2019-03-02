@@ -12,8 +12,9 @@ import (
 )
 
 var interval = flag.Int("n", 5, "Interval in seconds")
-var runWithCommand = flag.Bool("c", false, "Run with cmd.exe")
-var hideTitle = flag.Bool("t", false, "Run with cmd.exe")
+var runWithCommand = flag.Bool("x", false, "Run with cmd.exe")
+var hideTitle = flag.Bool("t", false, "Hide title bar")
+var exitOnError = flag.Bool("e", false, "Exit on non-zero return of command")
 
 func init() {
 	flag.Parse()
@@ -76,8 +77,10 @@ func run(t time.Time, name string, args []string) {
 		goterm.Print(string(output))
 	} else {
 		goterm.Printf("Error: %v", err)
-		goterm.Flush()
-		os.Exit(1)
+		if *exitOnError {
+			goterm.Flush()
+			os.Exit(1)
+		}
 	}
 	goterm.Flush()
 }
