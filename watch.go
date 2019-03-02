@@ -12,6 +12,7 @@ import (
 )
 
 var interval = flag.Int("n", 5, "Interval in seconds")
+var runWithCommand = flag.Bool("c", false, "Run with cmd.exe")
 
 func init() {
 	flag.Parse()
@@ -24,8 +25,19 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-	cmd := cmdArray[0]
-	cmdArgs := cmdArray[1:]
+
+	var cmd string
+	var cmdArgs []string
+
+	if *runWithCommand {
+		cmd = "cmd.exe"
+		cmdArgs = make([]string, len(cmdArgs)+1)
+		cmdArgs[0] = "/c"
+		cmdArgs = append(cmdArgs, cmdArray...)
+	} else {
+		cmd = cmdArray[0]
+		cmdArgs = cmdArray[1:]
+	}
 
 	run(time.Now(), cmd, cmdArgs)
 	ticker := time.NewTicker(time.Duration(*interval) * time.Second)
@@ -61,6 +73,8 @@ func run(t time.Time, name string, args []string) {
 		goterm.Print(string(output))
 	} else {
 		goterm.Printf("Error: %v", err)
+		goterm.Flush()
+		os.Exit(1)
 	}
 	goterm.Flush()
 }
