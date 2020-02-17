@@ -87,7 +87,7 @@ func run(t time.Time, name string, args []string) {
 				goterm.Print(ts)
 			}
 
-			goterm.MoveCursor(2, 3)
+			goterm.MoveCursor(1, 3)
 		}
 		cmd := exec.Command(name, args...)
 		output, err := cmd.CombinedOutput()
