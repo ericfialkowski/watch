@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ericfialkowski/goterm"
+	"github.com/buger/goterm"
 	"github.com/tevino/abool"
 )
 
