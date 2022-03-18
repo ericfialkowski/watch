@@ -15,6 +15,7 @@ import (
 
 var interval = flag.Int("n", 5, "Interval in seconds")
 var runWithCommand = flag.Bool("x", false, "Run with cmd.exe")
+var runWithPowershell = flag.Bool("s", false, "Run with powershell")
 var hideTitle = flag.Bool("t", false, "Hide title bar")
 var exitOnError = flag.Bool("e", false, "Exit on non-zero return of command")
 var preciseInterval = flag.Bool("p", false, "Try to run at precise interval")
@@ -43,6 +44,11 @@ func main() {
 		cmd = "cmd.exe"
 		cmdArgs = make([]string, len(cmdArgs)+1)
 		cmdArgs[0] = "/c"
+		cmdArgs = append(cmdArgs, cmdArray...)
+	} else if *runWithPowershell {
+		cmd = "pwsh.exe"
+		cmdArgs = make([]string, len(cmdArgs)+1)
+		cmdArgs[0] = "-c"
 		cmdArgs = append(cmdArgs, cmdArray...)
 	} else {
 		cmd = cmdArray[0]
