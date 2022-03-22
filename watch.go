@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -30,6 +31,10 @@ func init() {
 }
 
 func main() {
+	if runtime.GOOS != "windows" {
+		fmt.Println("Use the native watch command instead of this")
+		os.Exit(5)
+	}
 	cmdArray := flag.Args()
 	if len(cmdArray) == 0 {
 		fmt.Println("Must include a command to run")
