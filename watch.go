@@ -10,12 +10,12 @@ import (
 	"time"
 
 	"github.com/buger/goterm"
+	"github.com/mitchellh/go-ps"
 	"github.com/tevino/abool"
 )
 
 var interval = flag.Int("n", 5, "Interval in seconds")
-var runWithCommand = flag.Bool("x", false, "Run with cmd.exe")
-var runWithPowershell = flag.Bool("s", false, "Run with powershell")
+var runWithCommand = flag.Bool("x", false, "Run with command processor")
 var hideTitle = flag.Bool("t", false, "Hide title bar")
 var exitOnError = flag.Bool("e", false, "Exit on non-zero return of command")
 var preciseInterval = flag.Bool("p", false, "Try to run at precise interval")
@@ -34,21 +34,25 @@ func main() {
 	if len(cmdArray) == 0 {
 		fmt.Println("Must include a command to run")
 		flag.Usage()
-		os.Exit(1)
+		os.Exit(3)
 	}
 
 	var cmd string
 	var cmdArgs []string
 
 	if *runWithCommand {
-		cmd = "cmd.exe"
+		c, e := ps.FindProcess(os.Getppid())
+		if e != nil {
+			fmt.Printf("Error getting parent command processor: %v\n", e)
+			os.Exit(4)
+		}
+		cmd = c.Executable()
 		cmdArgs = make([]string, len(cmdArgs)+1)
-		cmdArgs[0] = "/c"
-		cmdArgs = append(cmdArgs, cmdArray...)
-	} else if *runWithPowershell {
-		cmd = "pwsh.exe"
-		cmdArgs = make([]string, len(cmdArgs)+1)
-		cmdArgs[0] = "-c"
+		if cmd == "cmd.exe" {
+			cmdArgs[0] = "/c"
+		} else {
+			cmdArgs[0] = "-c"
+		}
 		cmdArgs = append(cmdArgs, cmdArray...)
 	} else {
 		cmd = cmdArray[0]
@@ -57,7 +61,7 @@ func main() {
 
 	run(time.Now(), cmd, cmdArgs)
 	nextRun := time.Now().Add(time.Duration(*interval) * time.Second)
-	ticker := time.NewTicker(time.Duration(10 * time.Millisecond))
+	ticker := time.NewTicker(10 * time.Millisecond)
 	go func() {
 		for t := range ticker.C {
 			if time.Now().After(nextRun) || time.Now().Equal(nextRun) {
@@ -112,7 +116,7 @@ func run(t time.Time, name string, args []string) {
 				oldOutput = string(output)
 			})
 			if oldOutput != string(output) {
-				os.Exit(1)
+				os.Exit(2)
 			}
 		}
 
