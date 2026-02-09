@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Eric Fialkowski
+// SPDX-License-Identifier: MIT
+
 package main
 
 import (
