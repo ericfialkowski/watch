@@ -9,26 +9,21 @@ provided watch command.
 
 ### Command Line Options
 
--e    Exit on non-zero return of command
-
--g    Exit when output changes
-
--n #  Interval in seconds (default 5)
-
--p    Try to run at precise interval
-
--t    Hide title bar
-
--x    Run with command processor (cmd.exe/pwsh.exe/powershell.exe)
+| Flag | Description |
+|------|-------------|
+| `-e` | Exit on non-zero return of command |
+| `-g` | Exit when output changes |
+| `-n #` | Interval in seconds (default 5) |
+| `-p` | Try to run at precise interval |
+| `-t` | Hide title bar |
+| `-x` | Run with command processor (cmd.exe/pwsh.exe/powershell.exe) |
 
 
 ### Exit codes
-1 - exit on error selected and watched command error'ed
-
-2 - exit on change selected and watched command's output changed
-
-3 - didn't include a command to run
-
-4 - Couldn't find command processor to run under
-
-5 - Not running on Windows
+| Code | Description |
+|------|-------------|
+| 1 | Exit on error selected and watched command error'ed |
+| 2 | Exit on change selected and watched command's output changed |
+| 3 | Didn't include a command to run |
+| 4 | Couldn't find command processor to run under |
+| 5 | Not running on Windows |
